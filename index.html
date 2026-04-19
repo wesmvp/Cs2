@@ -7,201 +7,995 @@
   <style>
     * {
       box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --accent: #2563eb;
+      --accent-dark: #1d4ed8;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+
+      --bad-bg: #fee2e2;
+      --bad-text: #b91c1c;
+
+      --okay-bg: #fef3c7;
+      --okay-text: #b45309;
+
+      --clean-bg: #dcfce7;
+      --clean-text: #15803d;
+
+      --worse-bg: #fee2e2;
+      --worse-text: #b91c1c;
+
+      --nochange-bg: #e5e7eb;
+      --nochange-text: #374151;
+
+      --better-bg: #dcfce7;
+      --better-text: #15803d;
+
+      --lotbetter-bg: #bbf7d0;
+      --lotbetter-text: #166534;
     }
 
     body {
-      background: #f5f7fb;
-      color: #111827;
-      padding: 20px;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
     .app {
-      max-width: 480px;
+      max-width: 560px;
       margin: 0 auto;
+      padding: 20px 16px 36px;
     }
 
     .header {
-      margin-bottom: 24px;
+      margin-bottom: 18px;
     }
 
     .header h1 {
-      font-size: 28px;
-      font-weight: 700;
-      margin-bottom: 6px;
+      margin: 0;
+      font-size: 2rem;
+      letter-spacing: -0.03em;
     }
 
-    .header p {
-      color: #6b7280;
-      font-size: 15px;
+    .subtle {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.95rem;
     }
 
-    .summary-card {
-      background: white;
-      border-radius: 20px;
+    .card {
+      background: var(--card);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
       padding: 18px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
-    .summary-card h2 {
-      font-size: 16px;
-      margin-bottom: 10px;
-    }
-
-    .summary-stats {
-      display: flex;
-      justify-content: space-between;
+    .overview {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 12px;
     }
 
     .stat {
-      flex: 1;
       background: #f8fafc;
-      border-radius: 14px;
-      padding: 14px;
+      border-radius: 18px;
+      padding: 14px 10px;
       text-align: center;
     }
 
     .stat-number {
-      font-size: 22px;
+      font-size: 1.55rem;
       font-weight: 700;
       margin-bottom: 4px;
     }
 
     .stat-label {
-      font-size: 12px;
-      color: #6b7280;
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.2;
     }
 
-    .section-title {
-      font-size: 18px;
-      font-weight: 700;
-      margin-bottom: 14px;
-    }
-
-    .spot-list {
+    .room-list {
       display: grid;
       gap: 14px;
+      margin-top: 12px;
     }
 
-    .spot-card {
-      background: white;
-      border-radius: 20px;
-      padding: 18px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
-    }
-
-    .spot-top {
+    .room-top,
+    .section-top,
+    .row-between {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .room-name,
+    .section-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .latest-date {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 8px;
       margin-bottom: 12px;
     }
 
-    .spot-name {
-      font-size: 18px;
-      font-weight: 600;
-    }
-
-    .badge {
-      font-size: 12px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: #e5e7eb;
-      color: #374151;
-    }
-
-    .badge.good {
-      background: #dcfce7;
-      color: #166534;
-    }
-
-    .spot-date {
-      font-size: 13px;
-      color: #6b7280;
+    .pill-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
       margin-bottom: 14px;
     }
 
-    .spot-note {
-      font-size: 14px;
-      color: #374151;
-      margin-bottom: 16px;
-      line-height: 1.4;
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      padding: 7px 11px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      white-space: nowrap;
     }
 
-    .spot-button {
-      width: 100%;
+    .pill.bad { background: var(--bad-bg); color: var(--bad-text); }
+    .pill.okay { background: var(--okay-bg); color: var(--okay-text); }
+    .pill.clean { background: var(--clean-bg); color: var(--clean-text); }
+
+    .pill.worse { background: var(--worse-bg); color: var(--worse-text); }
+    .pill.no-change { background: var(--nochange-bg); color: var(--nochange-text); }
+    .pill.better { background: var(--better-bg); color: var(--better-text); }
+    .pill.a-lot-better { background: var(--lotbetter-bg); color: var(--lotbetter-text); }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    .btn,
+    .ghost-btn,
+    .icon-btn {
       border: none;
-      background: #2563eb;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn {
+      width: 100%;
+      background: var(--accent);
       color: white;
+      padding: 14px 16px;
+      border-radius: 16px;
+      font-weight: 700;
+    }
+
+    .btn:hover {
+      background: var(--accent-dark);
+    }
+
+    .ghost-btn {
+      width: 100%;
+      background: #eff6ff;
+      color: var(--accent-dark);
+      padding: 13px 16px;
+      border-radius: 16px;
+      font-weight: 700;
+    }
+
+    .ghost-btn:hover {
+      background: #dbeafe;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: var(--accent-dark);
+      font-size: 1.2rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.86rem;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+
+    .field input[type="file"],
+    .field select,
+    .field textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px 13px;
+      background: white;
+    }
+
+    .field textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .helper {
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-top: 6px;
+    }
+
+    .preview-wrap {
+      margin-top: 10px;
+    }
+
+    .preview-wrap img,
+    .compare-grid img,
+    .history-image {
+      width: 100%;
+      border-radius: 18px;
+      display: block;
+      object-fit: cover;
+    }
+
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .compare-card {
+      background: #f8fafc;
+      border-radius: 20px;
+      padding: 12px;
+    }
+
+    .compare-card-title {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+        .chart-wrap {
+      margin-top: 10px;
+    }
+
+    .chart {
+      display: grid;
+      gap: 12px;
+    }
+
+    .chart-row {
+      background: #f8fafc;
+      border-radius: 18px;
+      padding: 10px 12px 12px;
+    }
+
+    .chart-date {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .bar-group {
+      display: grid;
+      gap: 8px;
+    }
+
+    .bar-line {
+      display: grid;
+      grid-template-columns: 84px 1fr;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bar-label {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 12px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 999px;
+    }
+
+    .bar-fill.condition {
+      background: linear-gradient(90deg, #f59e0b, #22c55e);
+    }
+
+    .bar-fill.change {
+      background: linear-gradient(90deg, #ef4444, #22c55e);
+    }
+
+    .history-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .history-item {
+      background: #f8fafc;
+      border-radius: 22px;
       padding: 14px;
-      border-radius: 14px;
-      font-size: 15px;
-      font-weight: 600;
+    }
+
+    .history-date {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .history-note {
+      margin-top: 10px;
+      font-size: 0.94rem;
+      line-height: 1.45;
+    }
+
+    .empty {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 18px;
+      transform: translateX(-50%);
+      background: #0f172a;
+      color: white;
+      padding: 12px 14px;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: calc(100% - 24px);
+      z-index: 1000;
+    }
+
+    .toast button {
+      border: none;
+      background: white;
+      color: #0f172a;
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      z-index: 999;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 460px;
+      background: white;
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .modal h3 {
+      margin: 0 0 8px;
+      font-size: 1.15rem;
+    }
+
+    .modal p {
+      margin: 0 0 14px;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .modal-buttons {
+      display: grid;
+      gap: 10px;
+    }
+
+    .modal-buttons .btn,
+    .modal-buttons .ghost-btn {
+      margin: 0;
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <div class="header">
-      <h1>Home Progress</h1>
-      <p>Track each space one day at a time</p>
-    </div>
+  <div class="app" id="app"></div>
+  <div id="modal-root"></div>
+  <div id="toast-root"></div>
 
-    <div class="summary-card">
-      <h2>Overview</h2>
-      <div class="summary-stats">
-        <div class="stat">
-          <div class="stat-number">2</div>
-          <div class="stat-label">Updated Today</div>
-        </div>
-        <div class="stat">
-          <div class="stat-number">5</div>
-          <div class="stat-label">Tracked Spots</div>
-        </div>
-        <div class="stat">
-          <div class="stat-number">4</div>
-          <div class="stat-label">Day Streak</div>
-        </div>
-      </div>
-    </div>
+  <script>
+    const ROOM_NAMES = ["Living Room", "Kitchen", "Office", "Bedroom", "Bathroom"];
 
-    <div class="section-title">Tracked Spots</div>
+    const conditionMap = {
+      "Bad": 1,
+      "Okay": 2,
+      "Clean": 3
+    };
 
-    <div class="spot-list">
-      <div class="spot-card">
-        <div class="spot-top">
-          <div class="spot-name">Kitchen Counter</div>
-          <div class="badge good">Improving</div>
-        </div>
-        <div class="spot-date">Last updated: Today</div>
-        <div class="spot-note">Wiped down the left side and cleared a few items.</div>
-        <button class="spot-button">Open Spot</button>
-      </div>
+    const changeMap = {
+      "Worse": 1,
+      "No change": 2,
+      "Better": 3,
+      "A lot better": 4
+    };
 
-      <div class="spot-card">
-        <div class="spot-top">
-          <div class="spot-name">Bathroom Sink</div>
-          <div class="badge">Same</div>
-        </div>
-        <div class="spot-date">Last updated: Yesterday</div>
-        <div class="spot-note">Still needs work, but surface is a little clearer.</div>
-        <button class="spot-button">Open Spot</button>
-      </div>
+    const STORAGE_KEY = "homeProgressAppV1";
+    let state = loadState();
+    let currentRoom = null;
+    let lastAction = null;
+    let toastTimer = null;
 
-      <div class="spot-card">
-        <div class="spot-top">
-          <div class="spot-name">Living Room Floor</div>
-          <div class="badge">Needs Work</div>
+    function loadState() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        ROOM_NAMES.forEach(name => {
+          if (!parsed.rooms[name]) parsed.rooms[name] = [];
+        });
+        if (!parsed.view) parsed.view = "home";
+        return parsed;
+      }
+
+      return {
+        view: "home",
+        rooms: ROOM_NAMES.reduce((acc, name) => {
+          acc[name] = [];
+          return acc;
+        }, {})
+      };
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function formatDate(dateString) {
+      return new Date(dateString).toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric"
+      });
+    }
+
+    function todayKey() {
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function escapeHtml(text) {
+      return (text || "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function pillClass(value) {
+      return value.toLowerCase().replace(/\s+/g, "-");
+    }
+
+    function getLatestEntry(roomName) {
+      const entries = state.rooms[roomName];
+      if (!entries.length) return null;
+      return entries[entries.length - 1];
+    }
+        function countUpdatedToday() {
+      const today = todayKey();
+      return ROOM_NAMES.filter(name => {
+        const latest = getLatestEntry(name);
+        return latest && latest.dateKey === today;
+      }).length;
+    }
+
+    function countTrackedRooms() {
+      return ROOM_NAMES.filter(name => state.rooms[name].length > 0).length;
+    }
+
+    function currentStreak() {
+      let streak = 0;
+      const today = new Date();
+      for (let i = 0; i < 365; i++) {
+        const check = new Date(today);
+        check.setDate(today.getDate() - i);
+        const key = check.toISOString().slice(0, 10);
+        const hasAny = ROOM_NAMES.some(name =>
+          state.rooms[name].some(entry => entry.dateKey === key)
+        );
+        if (hasAny) {
+          streak++;
+        } else {
+          break;
+        }
+      }
+      return streak;
+    }
+
+    function setView(view, roomName = null) {
+      state.view = view;
+      currentRoom = roomName;
+      saveState();
+      render();
+    }
+
+    function showToast(message, showUndo = false) {
+      clearTimeout(toastTimer);
+      const root = document.getElementById("toast-root");
+      root.innerHTML = `
+        <div class="toast">
+          <span>${escapeHtml(message)}</span>
+          ${showUndo ? `<button onclick="undoLastAction()">Undo</button>` : ""}
         </div>
-        <div class="spot-date">Last updated: 2 days ago</div>
-        <div class="spot-note">A few things were picked up, but clutter is still building.</div>
-        <button class="spot-button">Open Spot</button>
-      </div>
-    </div>
-  </div>
+      `;
+      toastTimer = setTimeout(() => {
+        root.innerHTML = "";
+      }, 5000);
+    }
+
+    function clearToast() {
+      clearTimeout(toastTimer);
+      document.getElementById("toast-root").innerHTML = "";
+    }
+
+    function openModal(title, text, buttonsHtml) {
+      document.getElementById("modal-root").innerHTML = `
+        <div class="modal-backdrop">
+          <div class="modal">
+            <h3>${escapeHtml(title)}</h3>
+            <p>${escapeHtml(text)}</p>
+            <div class="modal-buttons">
+              ${buttonsHtml}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function closeModal() {
+      document.getElementById("modal-root").innerHTML = "";
+    }
+
+    function render() {
+      const app = document.getElementById("app");
+      if (state.view === "home") {
+        app.innerHTML = renderHome();
+        return;
+      }
+      app.innerHTML = renderRoom(currentRoom);
+    }
+
+    function renderHome() {
+      return `
+        <div class="header">
+          <h1>Home Progress</h1>
+        </div>
+
+        <div class="card">
+          <div class="overview">
+            <div class="stat">
+              <div class="stat-number">${countUpdatedToday()}</div>
+              <div class="stat-label">Updated Today</div>
+            </div>
+            <div class="stat">
+              <div class="stat-number">${countTrackedRooms()}</div>
+              <div class="stat-label">Tracked Rooms</div>
+            </div>
+            <div class="stat">
+              <div class="stat-number">${currentStreak()}</div>
+              <div class="stat-label">Day Streak</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="room-list">
+          ${ROOM_NAMES.map(roomName => {
+            const latest = getLatestEntry(roomName);
+            return `
+              <div class="card">
+                <div class="room-top">
+                  <div class="room-name">${roomName}</div>
+                </div>
+                ${
+                  latest
+                    ? `
+                      <div class="latest-date">${formatDate(latest.createdAt)}</div>
+                      <div class="pill-row">
+                        <span class="pill ${pillClass(latest.condition)}">${latest.condition}</span>
+                        <span class="pill ${pillClass(latest.change)}">${latest.change}</span>
+                      </div>
+                    `
+                    : `
+                      <div class="latest-date">No entries yet</div>
+                    `
+                }
+                <button class="btn" onclick="setView('room', '${roomName.replace(/'/g, "\\'")}')">Open Room</button>
+              </div>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
+
+    function renderRoom(roomName) {
+      const entries = [...state.rooms[roomName]].reverse();
+      const latest = getLatestEntry(roomName);
+
+      return `
+        <div class="header">
+          <div class="row-between">
+            <button class="icon-btn" onclick="setView('home')">←</button>
+            <div class="room-name" style="flex:1; text-align:left;">${roomName}</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-top">
+            <div class="section-title">Current</div>
+          </div>
+          ${
+            latest
+              ? `
+                <div class="latest-date">${formatDate(latest.createdAt)}</div>
+                <div class="pill-row">
+                  <span class="pill ${pillClass(latest.condition)}">${latest.condition}</span>
+                  <span class="pill ${pillClass(latest.change)}">${latest.change}</span>
+                </div>
+              `
+              : `<div class="empty">No entries yet.</div>`
+          }
+        </div>
+
+        <div class="card">
+          <div class="section-title">Add Entry</div>
+          <div class="form-grid">
+            <div class="field">
+              <label for="photoInput">Photo</label>
+              <input id="photoInput" type="file" accept="image/*" capture="environment" onchange="handlePreview(event)" />
+              <div class="helper">Use the same spot each day for better tracking.</div>
+              <div class="preview-wrap hidden" id="previewWrap">
+                <img id="previewImage" alt="Preview" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="conditionSelect">Condition</label>
+              <select id="conditionSelect">
+                <option>Bad</option>
+                <option>Okay</option>
+                <option>Clean</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="changeSelect">Compared to yesterday</label>
+              <select id="changeSelect">
+                <option>Worse</option>
+                <option>No change</option>
+                <option>Better</option>
+                <option>A lot better</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="noteInput">Optional note</label>
+              <textarea id="noteInput" placeholder="Optional note"></textarea>
+              <div class="helper">Optional, but helpful.</div>
+            </div>
+
+            <button class="btn" onclick="saveEntry('${roomName.replace(/'/g, "\\'")}')">Save Entry</button>
+            <button class="ghost-btn" onclick="openCompareChoice('${roomName.replace(/'/g, "\\'")}')" ${state.rooms[roomName].length < 2 ? "disabled style='opacity:.5;cursor:not-allowed;'" : ""}>Compare Photos</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-title">Progress</div>
+          ${renderChart(roomName)}
+        </div>
+                <div class="card">
+          <div class="section-title">Snapshots</div>
+          ${
+            entries.length
+              ? `
+                <div class="history-list">
+                  ${entries.map((entry, index) => `
+                    <div class="history-item">
+                      <div class="history-date">${formatDate(entry.createdAt)}</div>
+                      <div class="pill-row">
+                        <span class="pill ${pillClass(entry.condition)}">${entry.condition}</span>
+                        <span class="pill ${pillClass(entry.change)}">${entry.change}</span>
+                      </div>
+                      <img class="history-image" src="${entry.photo}" alt="${roomName} snapshot ${index + 1}" />
+                      ${entry.note ? `<div class="history-note">${escapeHtml(entry.note)}</div>` : ""}
+                    </div>
+                  `).join("")}
+                </div>
+              `
+              : `<div class="empty">Your snapshots will show here.</div>`
+          }
+        </div>
+      `;
+    }
+
+    function renderChart(roomName) {
+      const entries = state.rooms[roomName];
+      if (!entries.length) {
+        return `<div class="empty">Progress will appear after your first entry.</div>`;
+      }
+
+      const recent = entries.slice(-7).reverse();
+
+      return `
+        <div class="chart-wrap">
+          <div class="chart">
+            ${recent.map(entry => `
+              <div class="chart-row">
+                <div class="chart-date">${formatDate(entry.createdAt)}</div>
+                <div class="bar-group">
+                  <div class="bar-line">
+                    <div class="bar-label">Condition</div>
+                    <div class="bar-track">
+                      <div class="bar-fill condition" style="width:${(conditionMap[entry.condition] / 3) * 100}%"></div>
+                    </div>
+                  </div>
+                  <div class="bar-line">
+                    <div class="bar-label">Change</div>
+                    <div class="bar-track">
+                      <div class="bar-fill change" style="width:${(changeMap[entry.change] / 4) * 100}%"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    function handlePreview(event) {
+      const file = event.target.files[0];
+      const wrap = document.getElementById("previewWrap");
+      const img = document.getElementById("previewImage");
+
+      if (!file) {
+        wrap.classList.add("hidden");
+        img.removeAttribute("src");
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = e => {
+        img.src = e.target.result;
+        wrap.classList.remove("hidden");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveEntry(roomName) {
+      const photoInput = document.getElementById("photoInput");
+      const condition = document.getElementById("conditionSelect").value;
+      const change = document.getElementById("changeSelect").value;
+      const note = document.getElementById("noteInput").value.trim();
+      const file = photoInput.files[0];
+
+      if (!file) {
+        showToast("Add a photo first.");
+        return;
+      }
+
+      const roomEntries = state.rooms[roomName];
+      const today = todayKey();
+      const todayIndex = roomEntries.findIndex(entry => entry.dateKey === today);
+
+      const proceed = () => {
+        const reader = new FileReader();
+        reader.onload = e => {
+          const newEntry = {
+            id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+            dateKey: today,
+            createdAt: new Date().toISOString(),
+            condition,
+            change,
+            note,
+            photo: e.target.result
+          };
+
+          if (todayIndex !== -1) {
+            const oldEntry = roomEntries[todayIndex];
+            roomEntries[todayIndex] = newEntry;
+            lastAction = {
+              type: "replace",
+              roomName,
+              index: todayIndex,
+              previousEntry: oldEntry,
+              newEntry
+            };
+            saveState();
+            render();
+            clearForm();
+            showToast("Today’s entry was replaced.", true);
+          } else {
+            roomEntries.push(newEntry);
+            lastAction = {
+              type: "add",
+              roomName,
+              entryId: newEntry.id
+            };
+            saveState();
+            render();
+            clearForm();
+            showToast("Entry saved.", true);
+          }
+        };
+        reader.readAsDataURL(file);
+      };
+
+      if (todayIndex !== -1) {
+        openModal(
+          "Replace today’s entry?",
+          "You already logged this room today. This will replace the existing entry first.",
+          `
+            <button class="btn" onclick="confirmReplace()">Replace Entry</button>
+            <button class="ghost-btn" onclick="closeModal()">Cancel</button>
+          `
+        );
+        window.confirmReplace = function () {
+          closeModal();
+          proceed();
+          delete window.confirmReplace;
+        };
+      } else {
+        proceed();
+      }
+    }
+
+    function clearForm() {
+      const photoInput = document.getElementById("photoInput");
+      const noteInput = document.getElementById("noteInput");
+      const previewWrap = document.getElementById("previewWrap");
+      const previewImage = document.getElementById("previewImage");
+
+      if (photoInput) photoInput.value = "";
+      if (noteInput) noteInput.value = "";
+      if (previewWrap) previewWrap.classList.add("hidden");
+      if (previewImage) previewImage.removeAttribute("src");
+    }
+
+    function undoLastAction() {
+      if (!lastAction) {
+        showToast("Nothing to undo.");
+        return;
+      }
+
+      const { type, roomName } = lastAction;
+      const entries = state.rooms[roomName];
+
+      if (type === "add") {
+        const index = entries.findIndex(entry => entry.id === lastAction.entryId);
+        if (index !== -1) entries.splice(index, 1);
+      }
+
+      if (type === "replace") {
+        entries[lastAction.index] = lastAction.previousEntry;
+      }
+
+      lastAction = null;
+      saveState();
+      clearToast();
+      render();
+      showToast("Last action undone.");
+    }
+
+    function openCompareChoice(roomName) {
+      const entries = state.rooms[roomName];
+      if (entries.length < 2) {
+        showToast("You need at least two entries to compare.");
+        return;
+      }
+
+      openModal(
+        "Choose comparison",
+        "Pick which photos you want to compare side by side.",
+        `
+          <button class="btn" onclick="showCompare('${roomName.replace(/'/g, "\\'")}', 'first-latest')">First vs Latest</button>
+          <button class="ghost-btn" onclick="showCompare('${roomName.replace(/'/g, "\\'")}', 'previous-latest')">Yesterday vs Latest</button>
+          <button class="ghost-btn" onclick="closeModal()">Cancel</button>
+        `
+      );
+    }
+
+    function showCompare(roomName, mode) {
+      const entries = state.rooms[roomName];
+      const latest = entries[entries.length - 1];
+      let leftEntry = null;
+      let leftLabel = "";
+
+      if (mode === "first-latest") {
+        leftEntry = entries[0];
+        leftLabel = "First";
+      } else {
+        leftEntry = entries[entries.length - 2];
+        leftLabel = "Previous";
+      }
+
+      closeModal();
+
+      document.getElementById("modal-root").innerHTML = `
+        <div class="modal-backdrop">
+          <div class="modal">
+            <h3>Photo comparison</h3>
+            <p>Side by side view.</p>
+            <div class="compare-grid">
+              <div class="compare-card">
+                <div class="compare-card-title">${leftLabel} · ${formatDate(leftEntry.createdAt)}</div>
+                <img src="${leftEntry.photo}" alt="${leftLabel} photo" />
+              </div>
+              <div class="compare-card">
+                <div class="compare-card-title">Latest · ${formatDate(latest.createdAt)}</div>
+                <img src="${latest.photo}" alt="Latest photo" />
+              </div>
+            </div>
+            <div class="modal-buttons" style="margin-top:14px;">
+              <button class="ghost-btn" onclick="closeModal()">Close</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    window.setView = setView;
+    window.handlePreview = handlePreview;
+    window.saveEntry = saveEntry;
+    window.undoLastAction = undoLastAction;
+    window.openCompareChoice = openCompareChoice;
+    window.showCompare = showCompare;
+    window.closeModal = closeModal;
+
+    render();
+  </script>
 </body>
 </html>
