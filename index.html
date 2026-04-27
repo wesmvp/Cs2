@@ -3,152 +3,682 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fix My Ugly City</title>
+<title>MedTrack</title>
 
 <style>
-* {margin:0;padding:0;box-sizing:border-box;}
-
-body {
-  font-family: Arial, sans-serif;
-  background:#0f1117;
-  color:#e6e6e6;
+*{
+  box-sizing:border-box;
 }
 
-.container {
-  max-width:1100px;
-  margin:auto;
-  padding:20px;
+html, body{
+  margin:0;
+  padding:0;
+  background:#0d0d0d;
+  color:#fff;
+  font-family:Arial, Helvetica, sans-serif;
 }
 
-h1 {margin-bottom:10px;}
-.card {
-  background:#181b22;
-  padding:20px;
-  border-radius:12px;
-  margin-bottom:20px;
+body{
+  display:flex;
+  justify-content:center;
 }
 
-.grid {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:20px;
-}
-
-input, select, textarea {
+.app-shell{
   width:100%;
-  padding:10px;
-  margin-top:5px;
-  margin-bottom:10px;
-  border:none;
-  border-radius:8px;
-  background:#222;
-  color:white;
+  max-width:520px;
+  padding:10px 0 30px;
 }
 
-button {
-  padding:10px 15px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
+.phone-panel{
+  background:#0d0d0d;
+  border-radius:18px;
+  overflow:hidden;
 }
 
-.primary {background:#4f7cff;color:white;}
-.ghost {background:transparent;border:1px solid #555;color:#ccc;}
-
-.checkbox-grid {
-  display:grid;
-  grid-template-columns:1fr 1fr;
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:14px 16px;
+  border-bottom:1px solid rgba(255,255,255,0.06);
   gap:10px;
 }
 
-.hidden {display:none;}
+.brand{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  min-width:0;
+}
 
-.score {
-  font-size:40px;
+.brand-icon{
+  width:18px;
+  height:18px;
+  background:linear-gradient(135deg,#fff 0 45%,#6fdc2f 45% 100%);
+  clip-path:polygon(
+    35% 0%,65% 0%,
+    65% 35%,100% 35%,
+    100% 65%,65% 65%,
+    65% 100%,35% 100%,
+    35% 65%,0% 65%,
+    0% 35%,35% 35%
+  );
+  flex:0 0 auto;
+}
+
+.brand-text{
+  font-weight:700;
+  white-space:nowrap;
+}
+
+.brand-text .track{
+  color:#6fdc2f;
+}
+
+.top-right{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex:0 0 auto;
+}
+
+.undo-btn{
+  border:none;
+  border-radius:10px;
+  background:rgba(255,255,255,0.08);
+  color:#fff;
+  font-size:11px;
+  font-weight:700;
+  padding:8px 12px;
+  cursor:pointer;
+  white-space:nowrap;
+}
+
+.undo-btn:disabled{
+  opacity:0.45;
+  cursor:not-allowed;
+}
+
+.status-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#6fdc2f;
+}
+
+.save-status{
+  text-align:center;
+  font-size:12px;
+  padding:6px;
+  color:rgba(255,255,255,0.6);
+  min-height:24px;
+}
+
+.row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:14px 16px;
+  border-bottom:1px solid rgba(255,255,255,0.07);
+}
+
+.left{
+  flex:1;
+  min-width:0;
+}
+
+.med-name{
+  font-size:16px;
+  font-weight:700;
+  margin-bottom:4px;
+}
+
+.med-dose{
+  font-size:12px;
+  color:rgba(255,255,255,0.78);
+  line-height:1.35;
+  margin-bottom:2px;
+}
+
+.med-schedule{
+  font-size:11px;
+  color:rgba(255,255,255,0.42);
+  line-height:1.25;
+  margin-bottom:6px;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+}
+
+.med-time{
+  font-size:12px;
+  color:rgba(255,255,255,0.55);
+  line-height:1.3;
+  margin-bottom:2px;
+}
+
+.med-next{
+  font-size:12px;
+  color:#6fdc2f;
+  line-height:1.3;
+}
+
+.take-btn{
+  border:none;
+  border-radius:10px;
+  background:linear-gradient(180deg,#73dc34,#58c71c);
+  color:#fff;
+  font-size:12px;
+  font-weight:700;
+  padding:10px 14px;
+  cursor:pointer;
+  white-space:nowrap;
+}
+
+.take-btn:disabled{
+  opacity:0.55;
+  cursor:not-allowed;
+}
+
+.activity-wrap{
+  padding:14px 16px 4px;
+  border-top:1px solid rgba(255,255,255,0.06);
+}
+
+.activity-title{
+  font-size:14px;
+  font-weight:700;
   margin-bottom:10px;
 }
 
-.snapshot {
-  background:#222;
-  padding:10px;
-  border-radius:8px;
-  margin-top:10px;
+.activity-list{
+  padding-bottom:10px;
 }
 
-img {
-  width:100%;
-  border-radius:8px;
-  margin-top:10px;
+.activity-day{
+  margin-bottom:12px;
 }
+
+.activity-day-header{
+  font-size:11px;
+  color:rgba(255,255,255,0.42);
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  padding-top:8px;
+  margin-bottom:8px;
+  border-top:1px solid rgba(255,255,255,0.08);
+}
+
+.activity-day:first-child .activity-day-header{
+  padding-top:0;
+  border-top:none;
+}
+
+.activity-item{
+  font-size:12px;
+  color:rgba(255,255,255,0.55);
+  line-height:1.3;
+  margin-bottom:6px;
+}
+
+.activity-item:last-child{
+  margin-bottom:0;
+}
+
+.empty-activity{
+  font-size:12px;
+  color:rgba(255,255,255,0.55);
+  line-height:1.3;
+}
+
 </style>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 </head>
 
 <body>
 
-<div class="container">
-  <h1>🏙️ Fix My Ugly City</h1>
+<div class="app-shell">
+  <div class="phone-panel">
 
-  <div class="grid">
-    <div class="card">
-      <h2>City Review</h2>
-
-      <form id="form">
-        <input id="name" placeholder="City name">
-
-        <select id="style">
-          <option value="realistic">Realistic</option>
-          <option value="american">American</option>
-          <option value="european">European</option>
-          <option value="suburban">Suburban</option>
-          <option value="dense">Dense</option>
-        </select>
-
-        <div class="checkbox-grid">
-          <label><input type="checkbox" value="gridy"> Too gridy</label>
-          <label><input type="checkbox" value="downtown"> Boring downtown</label>
-          <label><input type="checkbox" value="water"> Ugly waterfront</label>
-          <label><input type="checkbox" value="same"> Same everywhere</label>
-          <label><input type="checkbox" value="focal"> No focal point</label>
-          <label><input type="checkbox" value="terrain"> Ignores terrain</label>
+    <div class="topbar">
+      <div class="brand">
+        <div class="brand-icon"></div>
+        <div class="brand-text">
+          Med<span class="track">Track</span>
         </div>
-
-        <input type="file" id="img">
-
-        <button type="submit" class="primary">Analyze</button>
-      </form>
-    </div>
-
-    <div class="card">
-      <h2>Results</h2>
-
-      <div id="results" class="hidden">
-        <div class="score" id="score">0</div>
-        <div id="label"></div>
-
-        <h3>Problems</h3>
-        <ul id="problems"></ul>
-
-        <h3>Fixes</h3>
-        <ul id="fixes"></ul>
-
-        <img id="preview" class="hidden" alt="City preview">
-
-        <button id="save" class="primary" type="button">Save Snapshot</button>
       </div>
 
-      <div id="empty">Run an analysis</div>
+      <div class="top-right">
+        <button id="undoBtn" class="undo-btn">UNDO</button>
+        <div class="status-dot"></div>
+      </div>
     </div>
-  </div>
 
-  <div class="card">
-    <h2>Snapshots</h2>
-    <button id="undo" class="ghost" type="button">Undo</button>
-    <button id="clear" class="ghost" type="button">Clear</button>
+    <div id="status" class="save-status"></div>
 
-    <div id="snapshots"></div>
+    <div id="medList"></div>
+
+    <div class="activity-wrap">
+      <div class="activity-title">Recent Activity</div>
+      <div id="activityList" class="activity-list"></div>
+    </div>
+
   </div>
 </div>
 
-<script src="script.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyDoLMrezxwkfLc2JVS2byakA8Sz0ST6E-Y",
+  authDomain: "med-tracker-17c25.firebaseapp.com",
+  projectId: "med-tracker-17c25",
+  storageBucket: "med-tracker-17c25.firebasestorage.app",
+  messagingSenderId: "558108201833",
+  appId: "1:558108201833:web:17028d4da0c3f4befea3f8"
+};
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
+const db = firebase.firestore();
+
+const HISTORY_LIMIT = 30;
+
+const meds = [
+  {
+    name: "Tylenol 325mg",
+    dose: "2 tablets",
+    schedule: "Every 8 hours",
+    intervalHours: 8,
+    asNeeded: false
+  },
+  {
+    name: "Aspirin 81mg",
+    dose: "1 tablet",
+    schedule: "Two times a day",
+    intervalHours: 12,
+    asNeeded: false
+  },
+  {
+    name: "Gabapentin 300mg",
+    dose: "1 capsule",
+    schedule: "Two times a day",
+    intervalHours: 12,
+    asNeeded: false
+  },
+  {
+    name: "Gabapentin 600mg",
+    dose: "2 capsules",
+    schedule: "At bedtime",
+    intervalHours: null,
+    asNeeded: false
+  },
+  {
+    name: "Methocarbamol 500mg",
+    dose: "1–2 tablets",
+    schedule: "Every 8 hours as needed",
+    intervalHours: 8,
+    asNeeded: true
+  },
+  {
+    name: "Oxycodone 5mg",
+    dose: "1 tablet",
+    schedule: "Every 4 hours as needed",
+    intervalHours: 4,
+    asNeeded: true
+  },
+  {
+    name: "Stool Softener",
+    dose: "1 tablet",
+    schedule: "Two times a day",
+    intervalHours: 12,
+    asNeeded: false
+  }
+];
+
+const medList = document.getElementById("medList");
+const status = document.getElementById("status");
+const activityList = document.getElementById("activityList");
+const undoBtn = document.getElementById("undoBtn");
+
+let latestActivityEntries = [];
+let medsSnapshotData = {};
+
+function setStatus(msg){
+  status.textContent = msg || "";
+}
+
+function formatTime(date){
+  let h = date.getHours();
+  let m = date.getMinutes();
+  const ampm = h >= 12 ? "PM" : "AM";
+
+  h = h % 12 || 12;
+  m = m < 10 ? "0" + m : m;
+
+  return `${h}:${m} ${ampm}`;
+}
+
+function formatDateLabel(date){
+  return date.toLocaleDateString(undefined, {
+    weekday: "long",
+    month: "long",
+    day: "numeric"
+  });
+}
+
+function getDayKey(date){
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function parseStoredTimestamp(value){
+  if (!value) return null;
+  const date = new Date(value);
+  return isNaN(date.getTime()) ? null : date;
+}
+
+function formatActivityEntry(name, time){
+  return `${name} at ${time.toLowerCase()}`;
+}
+
+function setUndoState(entries){
+  undoBtn.disabled = !entries.length;
+}
+
+function getNextDoseText(med, lastTakenAt){
+  if (!lastTakenAt) {
+    return med.asNeeded ? "Can take now" : "No doses logged yet";
+  }
+
+  if (!med.intervalHours) {
+    return med.schedule;
+  }
+
+  const next = new Date(lastTakenAt.getTime() + med.intervalHours * 60 * 60 * 1000);
+  const now = new Date();
+
+  if (med.asNeeded) {
+    if (now >= next) {
+      return "Can take now";
+    }
+    return `You can’t take until ${formatTime(next)}`;
+  }
+
+  if (now >= next) {
+    return "Dose available now";
+  }
+
+  return `Next dose at ${formatTime(next)}`;
+}
+
+async function takeMed(name, btn){
+  try{
+    btn.disabled = true;
+    btn.textContent = "SAVING";
+    setStatus("Saving...");
+
+    const now = new Date();
+    const time = formatTime(now);
+    const timestamp = now.toISOString();
+
+    const medRef = db.collection("meds").doc(name);
+    const activityRef = db.collection("meta").doc("activityLog");
+
+    await db.runTransaction(async (transaction) => {
+      const medDoc = await transaction.get(medRef);
+      const activityDoc = await transaction.get(activityRef);
+
+      const existingTimes =
+        medDoc.exists && Array.isArray(medDoc.data().times)
+          ? medDoc.data().times.slice()
+          : [];
+
+      const existingTimestamps =
+        medDoc.exists && Array.isArray(medDoc.data().timestamps)
+          ? medDoc.data().timestamps.slice()
+          : [];
+
+      const updatedTimes = [...existingTimes, time].slice(-HISTORY_LIMIT);
+      const updatedTimestamps = [...existingTimestamps, timestamp].slice(-HISTORY_LIMIT);
+
+      transaction.set(medRef, {
+        times: updatedTimes,
+        timestamps: updatedTimestamps
+      }, { merge: true });
+
+      const existingEntries =
+        activityDoc.exists && Array.isArray(activityDoc.data().entries)
+          ? activityDoc.data().entries
+          : [];
+
+      const newEntry = {
+        med: name,
+        time: time,
+        timestamp: timestamp,
+        createdAt: Date.now()
+      };
+
+      const updatedEntries = [newEntry, ...existingEntries].slice(0, HISTORY_LIMIT);
+
+      transaction.set(activityRef, {
+        entries: updatedEntries
+      }, { merge: true });
+    });
+
+    setStatus("Saved");
+    setTimeout(() => setStatus(""), 1000);
+
+  } catch (err){
+    console.error(err);
+    setStatus("Could not save. Try again.");
+  } finally{
+    btn.disabled = false;
+    btn.textContent = "TAKE NOW";
+  }
+}
+
+async function undoLast(){
+  if (!latestActivityEntries.length) {
+    return;
+  }
+
+  try{
+    undoBtn.disabled = true;
+    setStatus("Undoing...");
+
+    await db.runTransaction(async (transaction) => {
+      const activityRef = db.collection("meta").doc("activityLog");
+      const activityDoc = await transaction.get(activityRef);
+
+      const entries =
+        activityDoc.exists && Array.isArray(activityDoc.data().entries)
+          ? activityDoc.data().entries
+          : [];
+
+      if (!entries.length) {
+        return;
+      }
+
+      const sortedEntries = entries
+        .slice()
+        .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+      const latestEntry = sortedEntries[0];
+      const remainingEntries = sortedEntries.slice(1);
+
+      const medRef = db.collection("meds").doc(latestEntry.med);
+      const medDoc = await transaction.get(medRef);
+
+      const medTimes =
+        medDoc.exists && Array.isArray(medDoc.data().times)
+          ? medDoc.data().times.slice()
+          : [];
+
+      const medTimestamps =
+        medDoc.exists && Array.isArray(medDoc.data().timestamps)
+          ? medDoc.data().timestamps.slice()
+          : [];
+
+      const lastMatchingTimeIndex = medTimes.lastIndexOf(latestEntry.time);
+      if (lastMatchingTimeIndex !== -1) {
+        medTimes.splice(lastMatchingTimeIndex, 1);
+      }
+
+      if (latestEntry.timestamp) {
+        const lastMatchingTimestampIndex = medTimestamps.lastIndexOf(latestEntry.timestamp);
+        if (lastMatchingTimestampIndex !== -1) {
+          medTimestamps.splice(lastMatchingTimestampIndex, 1);
+        }
+      }
+
+      transaction.set(activityRef, {
+        entries: remainingEntries.slice(0, HISTORY_LIMIT)
+      }, { merge: true });
+
+      transaction.set(medRef, {
+        times: medTimes.slice(-HISTORY_LIMIT),
+        timestamps: medTimestamps.slice(-HISTORY_LIMIT)
+      }, { merge: true });
+    });
+
+    setStatus("Undone");
+    setTimeout(() => setStatus(""), 1000);
+
+  } catch (err){
+    console.error(err);
+    setStatus("Could not undo.");
+    setUndoState(latestActivityEntries);
+  }
+}
+
+function renderMedicineList(data){
+  medList.innerHTML = "";
+
+  meds.forEach(med => {
+    const record = data[med.name] || {};
+    const history = Array.isArray(record.times) ? record.times : [];
+    const timestamps = Array.isArray(record.timestamps) ? record.timestamps : [];
+
+    const lastTime = history.length ? history[history.length - 1] : null;
+    const lastTimestamp = timestamps.length ? parseStoredTimestamp(timestamps[timestamps.length - 1]) : null;
+
+    const lastTakenText = lastTime ? `Last taken: ${lastTime}` : "Last taken: Not taken yet";
+    const nextDoseText = getNextDoseText(med, lastTimestamp);
+
+    let canTake = true;
+    if (med.asNeeded && lastTimestamp && med.intervalHours) {
+      const nextAllowed = new Date(lastTimestamp.getTime() + med.intervalHours * 60 * 60 * 1000);
+      canTake = new Date() >= nextAllowed;
+    }
+
+    const row = document.createElement("div");
+    row.className = "row";
+
+    row.innerHTML = `
+      <div class="left">
+        <div class="med-name">${med.name}</div>
+        <div class="med-dose">Dose: ${med.dose}</div>
+        <div class="med-schedule">${med.schedule}</div>
+        <div class="med-time">${lastTakenText}</div>
+        <div class="med-next">${nextDoseText}</div>
+      </div>
+      <button class="take-btn">${canTake ? "TAKE NOW" : "WAIT"}</button>
+    `;
+
+    const btn = row.querySelector("button");
+
+    if (!canTake) {
+      btn.disabled = true;
+    } else {
+      btn.onclick = () => takeMed(med.name, btn);
+    }
+
+    medList.appendChild(row);
+  });
+}
+
+function renderActivity(entries){
+  if (!entries.length){
+    activityList.innerHTML = `<div class="empty-activity">No activity yet</div>`;
+    latestActivityEntries = [];
+    setUndoState(entries);
+    return;
+  }
+
+  const sorted = entries
+    .slice()
+    .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
+    .slice(0, HISTORY_LIMIT);
+
+  latestActivityEntries = sorted;
+  setUndoState(sorted);
+
+  const grouped = [];
+
+  sorted.forEach(entry => {
+    const entryDate = parseStoredTimestamp(entry.timestamp) || new Date(entry.createdAt || Date.now());
+    const dayKey = getDayKey(entryDate);
+
+    let group = grouped.find(item => item.dayKey === dayKey);
+    if (!group) {
+      group = {
+        dayKey,
+        label: formatDateLabel(entryDate),
+        entries: []
+      };
+      grouped.push(group);
+    }
+
+    group.entries.push(entry);
+  });
+
+  activityList.innerHTML = grouped.map(group => {
+    const items = group.entries.map(entry => {
+      return `<div class="activity-item">${formatActivityEntry(entry.med, entry.time)}</div>`;
+    }).join("");
+
+    return `
+      <div class="activity-day">
+        <div class="activity-day-header">${group.label}</div>
+        ${items}
+      </div>
+    `;
+  }).join("");
+}
+
+undoBtn.addEventListener("click", undoLast);
+
+db.collection("meds").onSnapshot(snapshot => {
+  const data = {};
+
+  snapshot.forEach(doc => {
+    data[doc.id] = doc.data() || {};
+  });
+
+  medsSnapshotData = data;
+  renderMedicineList(data);
+});
+
+db.collection("meta").doc("activityLog").onSnapshot(doc => {
+  const entries = (doc.exists && Array.isArray(doc.data().entries)) ? doc.data().entries : [];
+  latestActivityEntries = entries
+    .slice()
+    .sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0))
+    .slice(0, HISTORY_LIMIT);
+  renderActivity(entries);
+});
+
+setUndoState([]);
+
+setInterval(() => {
+  renderMedicineList(medsSnapshotData);
+}, 30000);
+
+</script>
+
 </body>
-</html>
+</html> here’s this again
